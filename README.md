@@ -1,2 +1,2 @@
-compare
-=======
+jquery-compare
+==============
