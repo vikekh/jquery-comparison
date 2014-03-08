@@ -1,0 +1,14 @@
+.jquery-compare {
+	overflow: hidden;
+	position: relative;
+}
+
+.jquery-compare img.before,
+.jquery-compare img.after {
+	position: absolute;
+	top: 0;
+}
+
+.jquery-compare img.before {
+	left: 0;
+}
