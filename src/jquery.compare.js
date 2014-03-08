@@ -1,38 +1,61 @@
 (function ($, compare) {
-	var height,
-		settings,
+
+	var settings,
+		height,
 		width,
-		x,
+		pos;
+
+	var $wrapper,
 		$before,
-		$container,
 		$after;
 
 	compare.init = function (defaults, options) {
-		$container = $(this);
-		$before = $container.children('img.before'),
-		$after = $container.children('img.after');
 		settings = $.extend({}, defaults, options);
 
-		$before.on('load', function () {
-			//validate();
-			width = $before.width();
-			height = $before.height();
-			$container.width(width).height(height);
-			fold();
-		});
+		$wrapper = $(this);
+		$before = $wrapper.children('img.before'),
+		$after = $wrapper.children('img.after');
+
+		validate();
+
+		$wrapper.width(width).height(height);
+
+		if (settings.noCss) {
+			applyStaticCss();
+		}
+
+		update();
+		bind();
 	}
 
-	var applyCss = function () {};
+	var applyStaticCss = function () {
+		$wrapper.css('position', 'relative');
+		$before.add($after).css('position', 'absolute');
+	};
 
-	var fold = function () {
+	var bind = function () {
+		$wrapper.on('mousemove', update);
+	};
+
+	var update = function (event) {
 		switch (settings.direction) {
 			case 'vertical':
+				if (typeof pos === 'undefined') {
+					pos = Math.ceil(height/2);
+				}
+
+				$after.css('clip', 'rect(' + pos + 'px, ' + width + 'px, ' + height + 'px, 0)');
 				break;
 
 			case 'horizontal':
 			default:
-				x = Math.ceil(width/2);
-				$after.css('left', x + 'px');
+				if (typeof pos === 'undefined') {
+					pos = Math.ceil(width/2);
+				} else if (typeof event !== 'undefined') {
+					pos = event.pageX - $wrapper.offset().left;
+				}
+
+				$after.css('clip', 'rect(0, ' + width + 'px, ' + height + 'px, ' + pos + 'px)');
 				break;
 		}
 	};
@@ -47,13 +70,13 @@
 		}
 
 		if ($before.length > 1) {
-			$.error('Too many before images, using first.')
-			$before = $before.first().nextAll().remove();
+			$.error('Too many before images.')
+			//$before = $before.first().nextAll().remove();
 		}
 
 		if ($after.length > 1) {
-			$.error('Too many after images, using first.')
-			$after = $after.first().nextAll().remove();
+			$.error('Too many after images.')
+			//$after = $after.first().nextAll().remove();
 		}
 
 		if ($before.next() !== $after) {
@@ -62,6 +85,9 @@
 
 		if ($before.width() !== $after.width() || $before.height() !== $after.height()) {
 			$.error('Before and after images should have the same dimensions.');
+		} else {
+			width = $before.width();
+			height = $before.height();
 		}
 	};
 
@@ -71,16 +97,19 @@
 
 	$.fn.compare = function (options) {
 		return this.each(function () {
-			compare.init.apply(this, $.fn.compare.defaults, options);
+			compare.init.call(this, $.fn.compare.defaults, options);
 		});
 	};
 
 	$.fn.compare.defaults = {
-		direction: 'horizontal'
+		direction: 'horizontal',
+		noCss: false
 	};
 
 })(jQuery, compare);
 
 jQuery(document).ready(function ($) {
-	$('.jquery-compare').compare();
+	$(window).load(function () {
+		$('.jquery-compare').compare();
+	});
 });
