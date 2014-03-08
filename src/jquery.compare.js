@@ -24,7 +24,7 @@
 			applyStaticCss();
 		}
 
-		update();
+		update($after);
 		bind();
 	}
 
@@ -34,10 +34,14 @@
 	};
 
 	var bind = function () {
-		$wrapper.on('mousemove', update);
+		$wrapper.on('mouseenter', function () {
+			$wrapper.on('mousemove', function (event) {
+				update($(this).children('img.after'), event);
+			});
+		});
 	};
 
-	var update = function (event) {
+	var update = function ($after, event) {
 		switch (settings.direction) {
 			case 'vertical':
 				if (typeof pos === 'undefined') {
@@ -52,7 +56,7 @@
 				if (typeof pos === 'undefined') {
 					pos = Math.ceil(width/2);
 				} else if (typeof event !== 'undefined') {
-					pos = event.pageX - $wrapper.offset().left;
+					pos = event.pageX - $after.offset().left;
 				}
 
 				$after.css('clip', 'rect(0, ' + width + 'px, ' + height + 'px, ' + pos + 'px)');
