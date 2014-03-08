@@ -10,11 +10,11 @@
 		$after;
 
 	compare.init = function (defaults, options) {
-		settings = $.extend({}, defaults, options);
-
 		$wrapper = $(this);
 		$before = $wrapper.children('img.before'),
 		$after = $wrapper.children('img.after');
+
+		settings = $.extend({}, defaults, options, $wrapper.data());
 
 		validate();
 
@@ -24,7 +24,7 @@
 			applyStaticCss();
 		}
 
-		update($after);
+		update();
 		bind();
 	}
 
@@ -35,17 +35,21 @@
 
 	var bind = function () {
 		$wrapper.on('mouseenter', function () {
-			$wrapper.on('mousemove', function (event) {
-				update($(this).children('img.after'), event);
+			$(this).on('mousemove', function (event) {
+				update.call(this, event);
 			});
 		});
 	};
 
-	var update = function ($after, event) {
+	var update = function (event) {
+		var $after = $(this).children('img.after');
+
 		switch (settings.direction) {
 			case 'vertical':
 				if (typeof pos === 'undefined') {
 					pos = Math.ceil(height/2);
+				} else if (typeof event !== 'undefined') {
+					pos = event.pageY - $('body').offset().top;
 				}
 
 				$after.css('clip', 'rect(' + pos + 'px, ' + width + 'px, ' + height + 'px, 0)');
@@ -56,7 +60,7 @@
 				if (typeof pos === 'undefined') {
 					pos = Math.ceil(width/2);
 				} else if (typeof event !== 'undefined') {
-					pos = event.pageX - $after.offset().left;
+					pos = event.pageX - $('body').offset().left;
 				}
 
 				$after.css('clip', 'rect(0, ' + width + 'px, ' + height + 'px, ' + pos + 'px)');
