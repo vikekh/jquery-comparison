@@ -1,111 +1,105 @@
-(function ($, compare) {
+var compare = (function ($) {
 
-	var settings,
-		height,
-		width,
-		pos;
+	var compare = function (that, defaults, options) {
+		this.$wrapper = $(that);
+		this.$before = this.$wrapper.children('img.before'),
+		this.$after = this.$wrapper.children('img.after');
 
-	var $wrapper,
-		$before,
-		$after;
+		this.settings = $.extend({}, defaults, options, this.$wrapper.data());
 
-	compare.init = function (defaults, options) {
-		$wrapper = $(this);
-		$before = $wrapper.children('img.before'),
-		$after = $wrapper.children('img.after');
+		this.validate();
 
-		settings = $.extend({}, defaults, options, $wrapper.data());
+		this.$wrapper.width(this.width).height(this.height);
 
-		validate();
-
-		$wrapper.width(width).height(height);
-
-		if (settings.noCss) {
-			applyStaticCss();
+		if (this.settings.noCss) {
+			this.applyStaticCss();
 		}
 
-		update();
-		bind();
-	}
-
-	var applyStaticCss = function () {
-		$wrapper.css('position', 'relative');
-		$before.add($after).css('position', 'absolute');
+		this.update();
+		this.bind();
 	};
 
-	var bind = function () {
-		$wrapper.on('mouseenter', function () {
+	compare.prototype.applyStaticCss = function () {
+		this.$wrapper.css('position', 'relative');
+		this.$before.add(this.$after).css('position', 'absolute');
+	};
+
+	compare.prototype.bind = function () {
+		var that = this;
+		
+		this.$wrapper.on('mouseenter', function () {
 			$(this).on('mousemove', function (event) {
-				update.call(this, event);
+				that.update(event);
 			});
 		});
 	};
 
-	var update = function (event) {
-		var $after = $(this).children('img.after');
-
-		switch (settings.direction) {
+	compare.prototype.update = function (event) {
+		switch (this.settings.direction) {
 			case 'vertical':
-				if (typeof pos === 'undefined') {
-					pos = Math.ceil(height/2);
+				if (typeof this.pos === 'undefined') {
+					this.pos = Math.ceil(this.height/2);
 				} else if (typeof event !== 'undefined') {
-					pos = event.pageY - $('body').offset().top;
+					this.pos = event.pageY - this.$wrapper.offset().top;
 				}
 
-				$after.css('clip', 'rect(' + pos + 'px, ' + width + 'px, ' + height + 'px, 0)');
+				this.$after.css('clip', 'rect(' + this.pos + 'px, ' + this.width + 'px, ' + this.height + 'px, 0)');
 				break;
 
 			case 'horizontal':
 			default:
-				if (typeof pos === 'undefined') {
-					pos = Math.ceil(width/2);
+				if (typeof this.pos === 'undefined') {
+					this.pos = Math.ceil(this.width/2);
 				} else if (typeof event !== 'undefined') {
-					pos = event.pageX - $('body').offset().left;
+					this.pos = event.pageX - this.$wrapper.offset().left;
 				}
 
-				$after.css('clip', 'rect(0, ' + width + 'px, ' + height + 'px, ' + pos + 'px)');
+				this.$after.css('clip', 'rect(0, ' + this.width + 'px, ' + this.height + 'px, ' + this.pos + 'px)');
 				break;
 		}
 	};
 
-	var validate = function () {
-		if ($before.length === 0) {
+	compare.prototype.validate = function () {
+		if (this.$before.length === 0) {
 			$.error('Could not find a before image.')
 		}
 
-		if ($after.length === 0) {
+		if (this.$after.length === 0) {
 			$.error('Could not find an after image.')
 		}
 
-		if ($before.length > 1) {
+		if (this.$before.length > 1) {
 			$.error('Too many before images.')
 			//$before = $before.first().nextAll().remove();
 		}
 
-		if ($after.length > 1) {
+		if (this.$after.length > 1) {
 			$.error('Too many after images.')
 			//$after = $after.first().nextAll().remove();
 		}
 
-		if ($before.next() !== $after) {
+		if (this.$before.next() !== this.$after) {
 			//$.error('Before and after images should be placed after each other in the DOM tree.');
 		}
 
-		if ($before.width() !== $after.width() || $before.height() !== $after.height()) {
+		if (this.$before.width() !== this.$after.width() || this.$before.height() !== this.$after.height()) {
 			$.error('Before and after images should have the same dimensions.');
 		} else {
-			width = $before.width();
-			height = $before.height();
+			this.width = this.$before.width();
+			this.height = this.$before.height();
 		}
 	};
+	
+	compare.prototype.constructor = compare;
+	return compare;
 
-})(jQuery, window.compare = window.compare || {});
+})(jQuery);
 
 (function ($, compare) {
 
 	$.fn.compare = function (options) {
 		return this.each(function () {
-			compare.init.call(this, $.fn.compare.defaults, options);
+			new compare(this, $.fn.compare.defaults, options);
 		});
 	};
 
