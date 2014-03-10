@@ -1,0 +1,9 @@
+body {
+	margin: 0;
+	overflow-y: hidden;
+}
+
+.jquery-comparison.gigantic img.before,
+.jquery-comparison.gigantic img.after {
+	width: 100%;
+}
