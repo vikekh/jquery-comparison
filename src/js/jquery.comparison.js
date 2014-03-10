@@ -54,7 +54,11 @@
 				case 'horizontal':
 					var x = typeof event !== 'undefined'
 						? event.pageX - $elements.wrapper.offset().left
-						: Math.ceil(data.width/2);
+						: settings.position;
+
+					if (x < 1) {
+						x *= data.width;
+					}
 
 					if (x <= settings.snapThreshold) {
 						x = 0;
@@ -69,7 +73,11 @@
 				case 'vertical':
 					var y = typeof event !== 'undefined'
 						? event.pageY - $elements.wrapper.offset().top
-						: Math.ceil(data.height/2);
+						: settings.position;
+
+					if (y < 1) {
+						y *= data.height;
+					}
 
 					if (y <= settings.snapThreshold) {
 						y = 0;
@@ -94,7 +102,8 @@
 	$.fn.comparison.defaults = {
 		direction: 'horizontal',
 		noCss: false,
-		snapThreshold: 20
+		position: 0.5,
+		snapThreshold: 20,
 	};
 
 })(jQuery);
