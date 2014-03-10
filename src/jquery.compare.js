@@ -1,105 +1,68 @@
-var compare = (function ($) {
+(function ($) {
 
-	var compare = function (that, defaults, options) {
-		this.$wrapper = $(that);
-		this.$before = this.$wrapper.children('img.before'),
-		this.$after = this.$wrapper.children('img.after');
+	var jQueryCompare = jQueryCompare || {};
 
-		this.settings = $.extend({}, defaults, options, this.$wrapper.data());
+	(function (cmp) {
 
-		this.validate();
+		cmp.bind = function ($elements, data, settings) {
+			var update = (function ($elements, data, settings) {
+				return function (event) {
+					cmp.update($elements, data, settings, event);
+				};
+			}($elements, data, settings));
 
-		this.$wrapper.width(this.width).height(this.height);
-
-		if (this.settings.noCss) {
-			this.applyStaticCss();
-		}
-
-		this.update();
-		this.bind();
-	};
-
-	compare.prototype.applyStaticCss = function () {
-		this.$wrapper.css('position', 'relative');
-		this.$before.add(this.$after).css('position', 'absolute');
-	};
-
-	compare.prototype.bind = function () {
-		var that = this;
-		
-		this.$wrapper.on('mouseenter', function () {
-			$(this).on('mousemove', function (event) {
-				that.update(event);
+			$elements.wrapper.on({
+				mousemove: function (event) {
+					update(event);
+				}
 			});
-		});
-	};
+		};
 
-	compare.prototype.update = function (event) {
-		switch (this.settings.direction) {
-			case 'vertical':
-				if (typeof this.pos === 'undefined') {
-					this.pos = Math.ceil(this.height/2);
-				} else if (typeof event !== 'undefined') {
-					this.pos = event.pageY - this.$wrapper.offset().top;
-				}
+		cmp.init = function (options) {
+			var $this = $(this),
+				$elements = {
+					wrapper: $this,
+					before: $this.children('img.before'),
+					after: $this.children('img.after')
+				},
+				data = {
+					width: $elements.before.width(),
+					height: $elements.before.height()
+				},
+				settings = $.extend({}, $.fn.compare.defaults, options, $(this)
+					.data());
 
-				this.$after.css('clip', 'rect(' + this.pos + 'px, ' + this.width + 'px, ' + this.height + 'px, 0)');
-				break;
+			$elements.wrapper.width(data.width).height(data.height);
 
-			case 'horizontal':
-			default:
-				if (typeof this.pos === 'undefined') {
-					this.pos = Math.ceil(this.width/2);
-				} else if (typeof event !== 'undefined') {
-					this.pos = event.pageX - this.$wrapper.offset().left;
-				}
+			cmp.update($elements, data, settings);
+			cmp.bind($elements, data, settings);
+		};
 
-				this.$after.css('clip', 'rect(0, ' + this.width + 'px, ' + this.height + 'px, ' + this.pos + 'px)');
-				break;
-		}
-	};
+		cmp.update = function ($elements, data, settings, event) {
+			switch (settings.direction) {
+				case 'horizontal':
+					var x = typeof event !== 'undefined'
+						? event.pageX - $elements.wrapper.offset().left
+						: Math.ceil(data.width/2);
+					$elements.after.css('clip', 'rect(0, ' + data.width +
+						'px, '+ data.height + 'px, ' + x + 'px)');
+					break;
 
-	compare.prototype.validate = function () {
-		if (this.$before.length === 0) {
-			$.error('Could not find a before image.')
-		}
+				case 'vertical':
+					var y = typeof event !== 'undefined'
+						? event.pageY - $elements.wrapper.offset().top
+						: Math.ceil(data.height/2);
+					$elements.after.css('clip', 'rect(' + y + 'px, ' + data.
+						width + 'px, ' + data.height + 'px, 0)');
+					break;
+			}
+		};
 
-		if (this.$after.length === 0) {
-			$.error('Could not find an after image.')
-		}
-
-		if (this.$before.length > 1) {
-			$.error('Too many before images.')
-			//$before = $before.first().nextAll().remove();
-		}
-
-		if (this.$after.length > 1) {
-			$.error('Too many after images.')
-			//$after = $after.first().nextAll().remove();
-		}
-
-		if (this.$before.next() !== this.$after) {
-			//$.error('Before and after images should be placed after each other in the DOM tree.');
-		}
-
-		if (this.$before.width() !== this.$after.width() || this.$before.height() !== this.$after.height()) {
-			$.error('Before and after images should have the same dimensions.');
-		} else {
-			this.width = this.$before.width();
-			this.height = this.$before.height();
-		}
-	};
-	
-	compare.prototype.constructor = compare;
-	return compare;
-
-})(jQuery);
-
-(function ($, compare) {
+	})(jQueryCompare);
 
 	$.fn.compare = function (options) {
 		return this.each(function () {
-			new compare(this, $.fn.compare.defaults, options);
+			jQueryCompare.init.call(this, options);
 		});
 	};
 
@@ -108,7 +71,7 @@ var compare = (function ($) {
 		noCss: false
 	};
 
-})(jQuery, compare);
+})(jQuery);
 
 jQuery(document).ready(function ($) {
 	$(window).load(function () {
