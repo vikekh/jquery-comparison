@@ -1,24 +1,38 @@
 ;(function ($) {
 
-	var jQueryComparison = jQueryComparison || {};
+	var comparison = comparison || {};
 
 	(function (cmp) {
 
-		cmp.applyCss = function ($elements, data, settings) {};
+		var $wrapper,
+			$before,
+			$after;
 
-		cmp.bind = function ($elements, data, settings) {
-			var update = (function ($elements, data, settings) {
+		var settings,
+			size;
+
+		cmp.applyCss = function () {};
+
+		cmp.bind = function () {
+			var update = (function ($wrapper, $target, size, direction, start,
+					snap) {
 				return function (event) {
-					cmp.update($elements, data, settings, event);
-				};
-			}($elements, data, settings));
+					if ($wrapper.hasClass('locked')) {
+						return null;
+					}
 
-			$elements.wrapper.on({
+					return cmp.update($wrapper, $target, size, direction,
+						start, snap, event);
+				};
+			}($wrapper, $after, size, settings.direction, settings.start,
+				settings.snap));
+
+			$wrapper.on({
 				click: function () {
-					$elements.wrapper.toggleClass('locked');
+					$(this).toggleClass('locked');
 				},
 				mousemove: function (event) {
-					if (!$elements.wrapper.hasClass('locked')) {
+					if (!$(this).hasClass('locked')) {
 						update(event);
 					}
 				}
@@ -26,84 +40,92 @@
 		};
 
 		cmp.init = function (options) {
-			var $this = $(this),
-				$elements = {
-					wrapper: $this,
-					before: $this.children('img.before'),
-					after: $this.children('img.after')
-				},
-				data = {
-					width: $elements.before.width(),
-					height: $elements.before.height()
-				},
-				settings = $.extend({}, $.fn.comparison.defaults, options, $(this)
-					.data());
+			$wrapper = $(this);
+			$before = $wrapper.children('img.before');
+			$after = $wrapper.children('img.after');
 
-			$elements.wrapper
-				.width(data.width).height(data.height)
+			settings = $.extend({}, $.fn.comparison.defaults, options,
+				$wrapper.data());
+			size = {
+				width: $before.width(),
+				height: $before.height()
+			};
+
+			$wrapper
+				.width(size.width).height(size.height)
 				.addClass(settings.direction);
 
 			// todo: validate
-			cmp.update($elements, data, settings);
-			//cmp.applyCss($elements, data, settings);
-			cmp.bind($elements, data, settings);
+			// todo: apply static CSS
+			cmp.bind();
+			cmp.update($wrapper, $after, size, settings.direction,
+				settings.start, settings.snap);
 		};
 
-		cmp.update = function ($elements, data, settings, event) {
-			switch (settings.direction) {
+		cmp.update = function ($wrapper, $target, size, direction, start, snap,
+				event) {
+			switch (direction) {
 				case 'horizontal':
-					var x = typeof event !== 'undefined'
-						? event.pageX - $elements.wrapper.offset().left
-						: settings.position;
+					var x;
 
-					if (x < 1) {
-						x *= data.width;
+					if (typeof event !== 'undefined') {
+						x = event.pageX - $wrapper.offset().left;
+					} else {
+						x = Math.round(start*size.width);
 					}
 
-					if (x <= settings.snapThreshold) {
+					if (x <= snap) {
 						x = 0;
-					} else if (x >= data.width - settings.snapThreshold) {
-						x = data.width;
+					} else if (x >= size.width - snap) {
+						x = size.width;
 					}
 
-					$elements.after.css('clip', 'rect(0, ' + data.width +
-						'px, '+ data.height + 'px, ' + x + 'px)');
+					$target.css('clip', 'rect(0, ' + size.width + 'px, ' +
+						size.height + 'px, ' + x + 'px)');
+
+					return x;
 					break;
 
 				case 'vertical':
-					var y = typeof event !== 'undefined'
-						? event.pageY - $elements.wrapper.offset().top
-						: settings.position;
+					var y;
 
-					if (y < 1) {
-						y *= data.height;
+					if (typeof event !== 'undefined') {
+						y = event.pageY - $wrapper.offset().top;
+					} else {
+						y = Math.round(start*size.height);
 					}
 
-					if (y <= settings.snapThreshold) {
+					if (y <= snap) {
 						y = 0;
-					} else if (y >= data.height - settings.snapThreshold) {
-						y = data.height;
+					} else if (y >= size.height - snap) {
+						y = size.height;
 					}
 
-					$elements.after.css('clip', 'rect(' + y + 'px, ' + data.
-						width + 'px, ' + data.height + 'px, 0)');
+					$target.css('clip', 'rect(' + y + 'px, ' + size.width +
+						'px, ' + size.height + 'px, 0)');
+
+					return y;
+					break;
+
+				default:
+					return null;
 					break;
 			}
 		};
 
-	})(jQueryComparison);
+	})(comparison);
 
 	$.fn.comparison = function (options) {
 		return this.each(function () {
-			jQueryComparison.init.call(this, options);
+			comparison.init.call(this, options);
 		});
 	};
 
 	$.fn.comparison.defaults = {
 		direction: 'horizontal',
-		noCss: false,
-		position: 0.5,
-		snapThreshold: 20,
+		css: false,
+		snap: 20,
+		start: 0.5
 	};
 
 })(jQuery);
