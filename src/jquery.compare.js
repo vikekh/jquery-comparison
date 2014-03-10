@@ -4,8 +4,18 @@
 
 	(function (cmp) {
 
-		cmp.applyCss = function ($elements, data, settings) {
-			// todo
+		cmp.applyCss = function ($elements, data, settings, update) {
+			/*if (!update) {
+				$elements.wrapper.css('position', 'absolute');
+				$elements.before.css('position', 'relative');
+				$elements.after.css('position', 'relative');
+			} else if (update) {
+				$elements.wrapper.is('.horizontal').cursor('cursor',
+					'w-resize');
+				$elements.wrapper.is('.vertical').cursor('cursor', 'n-resize');
+				$elements.wrapper.is('.locked').cursor('cursor',
+					'not-allowed');
+			}*/
 		};
 
 		cmp.bind = function ($elements, data, settings) {
@@ -46,8 +56,8 @@
 				.addClass(settings.direction);
 
 			// todo: validate
-			cmp.applyCss($elements, data, settings);
 			cmp.update($elements, data, settings);
+			//cmp.applyCss($elements, data, settings);
 			cmp.bind($elements, data, settings);
 		};
 

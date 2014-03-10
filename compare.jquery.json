@@ -2,7 +2,7 @@
 	"name": "compare",
 	"title": "jQuery Compare",
 	"description": "jQuery plugin for comparing images (before and after).",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"author": {
 		"name": "vikekh"
 	},
