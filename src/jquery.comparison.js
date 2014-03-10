@@ -1,6 +1,6 @@
 (function ($) {
 
-	var jQueryCompare = jQueryCompare || {};
+	var jQueryComparison = jQueryComparison || {};
 
 	(function (cmp) {
 
@@ -48,7 +48,7 @@
 					width: $elements.before.width(),
 					height: $elements.before.height()
 				},
-				settings = $.extend({}, $.fn.compare.defaults, options, $(this)
+				settings = $.extend({}, $.fn.comparison.defaults, options, $(this)
 					.data());
 
 			$elements.wrapper
@@ -95,15 +95,15 @@
 			}
 		};
 
-	})(jQueryCompare);
+	})(jQueryComparison);
 
-	$.fn.compare = function (options) {
+	$.fn.comparison = function (options) {
 		return this.each(function () {
-			jQueryCompare.init.call(this, options);
+			jQueryComparison.init.call(this, options);
 		});
 	};
 
-	$.fn.compare.defaults = {
+	$.fn.comparison.defaults = {
 		direction: 'horizontal',
 		noCss: false,
 		snapThreshold: 10
@@ -113,6 +113,6 @@
 
 jQuery(document).ready(function ($) {
 	$(window).load(function () {
-		$('.jquery-compare').compare();
+		$('.jquery-comparison').comparison();
 	});
 });

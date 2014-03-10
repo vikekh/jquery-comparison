@@ -1,8 +1,8 @@
 {
-	"name": "compare",
-	"title": "jQuery Compare",
+	"name": "comparison",
+	"title": "jQuery Comparison",
 	"description": "jQuery plugin for comparing images (before and after).",
-	"version": "0.0.2",
+	"version": "0.0.1",
 	"author": {
 		"name": "vikekh"
 	},
@@ -15,6 +15,6 @@
 	"dependencies": {
 		"jquery": ">=1.5"
 	},
-	"homepage": "https://github.com/vikekh/jquery-compare",
-	"demo": "http://htmlpreview.github.io/?https://github.com/vikekh/jquery-compare/blob/master/demo/demo.html"
+	"homepage": "https://github.com/vikekh/jquery-comparison",
+	"demo": "http://htmlpreview.github.io/?https://github.com/vikekh/jquery-comparison/blob/master/demo/demo.html"
 }
