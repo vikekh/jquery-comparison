@@ -17,10 +17,6 @@
 			var update = (function ($wrapper, $target, size, direction, start,
 					snap) {
 				return function (event) {
-					if ($wrapper.hasClass('locked')) {
-						return null;
-					}
-
 					return cmp.update($wrapper, $target, size, direction,
 						start, snap, event);
 				};
@@ -46,6 +42,9 @@
 
 			settings = $.extend({}, $.fn.comparison.defaults, options,
 				$wrapper.data());
+
+			cmp.validate();
+
 			size = {
 				width: $before.width(),
 				height: $before.height()
@@ -55,7 +54,6 @@
 				.width(size.width).height(size.height)
 				.addClass(settings.direction);
 
-			// todo: validate
 			// todo: apply static CSS
 			cmp.bind();
 			cmp.update($wrapper, $after, size, settings.direction,
@@ -113,6 +111,52 @@
 			}
 		};
 
+		cmp.validate = function () {
+			if ($before.length === 0) {
+				$.error('Could not find before image.');
+			}
+
+			if ($before.length > 1) {
+				$.error('More than one before image.');
+			}
+
+			if ($after.length === 0) {
+				$.error('Could not find after image.');
+			}
+
+			if ($after.length > 1) {
+				$.error('More than one after image.');
+			}
+
+			if ($before.width() !== $after.width() || $before.height() !== 
+					$after.height()) {
+				$.error('Images should have the same dimensions.');
+			}
+
+			/*if ($before.next() !== $after) {
+				$.error('After image should be the next sibling to the before '
+					+ 'image.')
+			}*/
+
+			if (typeof settings.css !== 'boolean') {
+				$.error('Option "css" is not boolean.');
+			}
+
+			if ($.inArray(settings.direction, ['horizontal', 'vertical']) ===
+					-1) {
+				$.error('Option "direction" is invalid ("' +
+					settings.direction + '").');
+			}
+
+			// todo: validate option snap
+
+			if (typeof settings.start !== 'number' || (settings.start < 0 &&
+					settings.start > 1)) {
+				$.error('Option "start" should be a float in interval '
+					+ '[0, 1].');
+			}
+		};
+
 	})(comparison);
 
 	$.fn.comparison = function (options) {
@@ -122,8 +166,8 @@
 	};
 
 	$.fn.comparison.defaults = {
-		direction: 'horizontal',
 		css: false,
+		direction: 'horizontal',
 		snap: 20,
 		start: 0.5
 	};
