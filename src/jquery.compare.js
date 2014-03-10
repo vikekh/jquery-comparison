@@ -4,6 +4,10 @@
 
 	(function (cmp) {
 
+		cmp.applyCss = function ($elements, data, settings) {
+			// todo
+		};
+
 		cmp.bind = function ($elements, data, settings) {
 			var update = (function ($elements, data, settings) {
 				return function (event) {
@@ -12,8 +16,13 @@
 			}($elements, data, settings));
 
 			$elements.wrapper.on({
+				click: function () {
+					$elements.wrapper.toggleClass('locked');
+				},
 				mousemove: function (event) {
-					update(event);
+					if (!$elements.wrapper.hasClass('locked')) {
+						update(event);
+					}
 				}
 			});
 		};
@@ -32,8 +41,12 @@
 				settings = $.extend({}, $.fn.compare.defaults, options, $(this)
 					.data());
 
-			$elements.wrapper.width(data.width).height(data.height);
+			$elements.wrapper
+				.width(data.width).height(data.height)
+				.addClass(settings.direction);
 
+			// todo: validate
+			cmp.applyCss($elements, data, settings);
 			cmp.update($elements, data, settings);
 			cmp.bind($elements, data, settings);
 		};
@@ -44,6 +57,13 @@
 					var x = typeof event !== 'undefined'
 						? event.pageX - $elements.wrapper.offset().left
 						: Math.ceil(data.width/2);
+
+					if (x <= settings.snapThreshold) {
+						x = 0;
+					} else if (x >= data.width - settings.snapThreshold) {
+						x = data.width;
+					}
+
 					$elements.after.css('clip', 'rect(0, ' + data.width +
 						'px, '+ data.height + 'px, ' + x + 'px)');
 					break;
@@ -52,6 +72,13 @@
 					var y = typeof event !== 'undefined'
 						? event.pageY - $elements.wrapper.offset().top
 						: Math.ceil(data.height/2);
+
+					if (y <= settings.snapThreshold) {
+						y = 0;
+					} else if (y >= data.height - settings.snapThreshold) {
+						y = data.height;
+					}
+
 					$elements.after.css('clip', 'rect(' + y + 'px, ' + data.
 						width + 'px, ' + data.height + 'px, 0)');
 					break;
@@ -68,7 +95,8 @@
 
 	$.fn.compare.defaults = {
 		direction: 'horizontal',
-		noCss: false
+		noCss: false,
+		snapThreshold: 10
 	};
 
 })(jQuery);

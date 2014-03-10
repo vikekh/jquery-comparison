@@ -6,3 +6,15 @@
 .jquery-compare img.after {
 	position: absolute;
 }
+
+.jquery-compare.horizontal {
+	cursor: w-resize;
+}
+
+.jquery-compare.vertical {
+	cursor: n-resize;
+}
+
+.jquery-compare.locked {
+	cursor: not-allowed;
+}
