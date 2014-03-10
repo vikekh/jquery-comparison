@@ -4,19 +4,7 @@
 
 	(function (cmp) {
 
-		cmp.applyCss = function ($elements, data, settings, update) {
-			/*if (!update) {
-				$elements.wrapper.css('position', 'absolute');
-				$elements.before.css('position', 'relative');
-				$elements.after.css('position', 'relative');
-			} else if (update) {
-				$elements.wrapper.is('.horizontal').cursor('cursor',
-					'w-resize');
-				$elements.wrapper.is('.vertical').cursor('cursor', 'n-resize');
-				$elements.wrapper.is('.locked').cursor('cursor',
-					'not-allowed');
-			}*/
-		};
+		cmp.applyCss = function ($elements, data, settings) {};
 
 		cmp.bind = function ($elements, data, settings) {
 			var update = (function ($elements, data, settings) {
@@ -106,7 +94,7 @@
 	$.fn.comparison.defaults = {
 		direction: 'horizontal',
 		noCss: false,
-		snapThreshold: 10
+		snapThreshold: 20
 	};
 
 })(jQuery);
