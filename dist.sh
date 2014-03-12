@@ -19,7 +19,3 @@ echo "$info" > dist/js/jquery.comparison.min.js
 java -jar yuicompressor.jar dist/js/jquery.comparison.js >> dist/js/jquery.comparison.min.js
 
 git commit -a "v$version"
-git push
-
-git tag "v$version"
-git push origin --tags
