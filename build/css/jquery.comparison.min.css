@@ -1,0 +1,2 @@
+/* jQuery Comparison v0.1.2 */
+.jquery-comparison{position:relative}.jquery-comparison img.after,.jquery-comparison img.before{position:absolute}.jquery-comparison.horizontal{cursor:w-resize}.jquery-comparison.vertical{cursor:n-resize}.jquery-comparison.locked{cursor:not-allowed}
