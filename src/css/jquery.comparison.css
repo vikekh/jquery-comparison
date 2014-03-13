@@ -17,22 +17,22 @@
  */
 
 .jquery-comparison {
-	position: relative;
+    position: relative;
 }
 
 .jquery-comparison img.before,
 .jquery-comparison img.after {
-	position: absolute;
+    position: absolute;
 }
 
 .jquery-comparison.horizontal {
-	cursor: w-resize;
+    cursor: w-resize;
 }
 
 .jquery-comparison.vertical {
-	cursor: n-resize;
+    cursor: n-resize;
 }
 
 .jquery-comparison.locked {
-	cursor: not-allowed;
+    cursor: not-allowed;
 }

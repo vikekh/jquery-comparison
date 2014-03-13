@@ -1,20 +1,20 @@
 {
-	"name": "comparison",
-	"title": "jQuery Comparison",
-	"description": "jQuery plugin for comparing images, you know, before and after.",
-	"version": "0.1.1",
-	"author": {
-		"name": "vikekh"
-	},
-	"licenses": [
-		{
-			"type": "GPLv3",
-			"url": "http://www.gnu.org/licenses/gpl-3.0.txt"
-		}
-	],
-	"dependencies": {
-		"jquery": ">=1.7.2"
-	},
-	"homepage": "https://github.com/vikekh/jquery-comparison",
-	"demo": "http://htmlpreview.github.io/?https://github.com/vikekh/jquery-comparison/blob/v0.1.1/demo/demo.html"
+    "name": "comparison",
+    "title": "jQuery Comparison",
+    "description": "jQuery plugin for comparing images, you know, before and after.",
+    "version": "0.1.1",
+    "author": {
+        "name": "vikekh"
+    },
+    "licenses": [
+        {
+            "type": "GPLv3",
+            "url": "http://www.gnu.org/licenses/gpl-3.0.txt"
+        }
+    ],
+    "dependencies": {
+        "jquery": ">=1.7.2"
+    },
+    "homepage": "https://github.com/vikekh/jquery-comparison",
+    "demo": "http://htmlpreview.github.io/?https://github.com/vikekh/jquery-comparison/blob/master/demo/demo.html"
 }
