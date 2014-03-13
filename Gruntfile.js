@@ -4,7 +4,7 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         common: {
             banner: '/* <%= pkg.title %> v<%= pkg.version %> */',
-            dest: 'build',
+            dest: 'dist',
             src: 'src'
         },
         uglify: {
