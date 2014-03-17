@@ -1,7 +1,7 @@
 {
     "name": "jquery.comparison",
     "title": "jQuery Comparison",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "devDependencies": {
         "grunt": "^0.4.4",
         "grunt-contrib-cssmin": "^0.9.0",
