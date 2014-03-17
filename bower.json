@@ -1,7 +1,23 @@
 {
-    "name": "jquery-comparison",
+    "name": "jquery.comparison",
     "version": "0.1.3",
+    "main": [
+        "dist/css/jquery.comparison.css",
+        "dist/css/jquery.comparison.min.css",
+        "dist/js/jquery.comparison.js",
+        "dist/js/jquery.comparison.min.js"
+    ],
     "dependencies": {
-        "jquery": "2.1.0"
+        "jquery": "latest"
+    },
+    "install" : {
+        "path" : {
+            "js": "demo/assets/js/vendor"
+        },
+        "sources" : {
+            "jquery" : [
+                "bower_components/jquery/dist/jquery.min.js"
+            ]
+        }
     }
 }
