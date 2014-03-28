@@ -3,6 +3,19 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         banner: '/*! <%= pkg.title %> v<%= pkg.version %> | (C) 2014 vikekh | http://www.gnu.org/licenses/gpl-3.0.txt */',
+        bowercopy: {
+            options: {
+                clean: true
+            },
+            js: {
+                options: {
+                    destPrefix: 'demo/assets/js/vendor'
+                },
+                files: {
+                    'jquery.min.js': 'jquery/dist/jquery.min.js'
+                }
+            }
+        },
         concat: {
             options: {
                 stripBanners: true,
@@ -37,10 +50,11 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.loadNpmTasks('grunt-bowercopy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-    grunt.registerTask('default', ['concat', 'uglify', 'cssmin']);
+    grunt.registerTask('default', ['bowercopy', 'concat', 'uglify', 'cssmin']);
 
 };
