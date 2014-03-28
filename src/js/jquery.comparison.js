@@ -27,19 +27,15 @@
 
         // todo: apply static CSS
         bind();
-        update($wrapper, $after, size, settings.direction, settings.start,
-            settings.snap);
+        update($wrapper, $after, size, settings);
     };
 
     var bind = function () {
-        var updateBound = (function ($wrapper, $target, size, direction, start,
-                snap) {
+        var updateCopy = (function ($wrapper, $target, size, settings) {
             return function (event) {
-                return update($wrapper, $target, size, direction, start, snap,
-                    event);
+                return update($wrapper, $target, size, settings, event);
             };
-        }($wrapper, $after, size, settings.direction, settings.start,
-            settings.snap));
+        }($wrapper, $after, size, settings));
 
         $wrapper.on({
             click: function () {
@@ -48,7 +44,7 @@
 
             mousemove: function (event) {
                 if (!$(this).hasClass('locked')) {
-                    updateBound(event);
+                    updateCopy(event);
                 }
             }
         });
@@ -56,21 +52,20 @@
 
     var css = function () {};
 
-    var update = function ($wrapper, $target, size, direction, start, snap,
-            event) {
-        switch (direction) {
+    var update = function ($wrapper, $target, size, settings, event) {
+        switch (settings.direction) {
             case 'horizontal':
                 var x;
 
                 if (typeof event !== 'undefined') {
                     x = event.pageX - $wrapper.offset().left;
                 } else {
-                    x = Math.round(start*size.width);
+                    x = Math.round(settings.start*size.width);
                 }
 
-                if (x <= snap) {
+                if (x <= settings.snap) {
                     x = 0;
-                } else if (x >= size.width - snap) {
+                } else if (x >= size.width - settings.snap) {
                     x = size.width;
                 }
 
@@ -86,12 +81,12 @@
                 if (typeof event !== 'undefined') {
                     y = event.pageY - $wrapper.offset().top;
                 } else {
-                    y = Math.round(start*size.height);
+                    y = Math.round(settings.start*size.height);
                 }
 
-                if (y <= snap) {
+                if (y <= settings.snap) {
                     y = 0;
-                } else if (y >= size.height - snap) {
+                } else if (y >= size.height - settings.snap) {
                     y = size.height;
                 }
 
